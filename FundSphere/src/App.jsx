@@ -1,16 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Layout from './Router/layout';
 import { Navbar } from './Components/navbar'
+import { Joinus } from './pages/joinus'
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
+       <Route element={<Layout />}>
+        <Route path='/' element={<Navbar/>} /> 
+      </Route>
+      <Route path='/join' element={<Joinus />} />
+    </>
+  )
+);
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <Navbar/>
-    </>
+    <RouterProvider router={router} />
   )
 }
 

@@ -1,22 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import {  BiArrowFromTop } from 'react-icons/bi';
+import { BiArrowFromBottom, BiArrowFromTop } from 'react-icons/bi';
 import logo from '../assets/logo_transparent.png';
 import axios from 'axios';
 import { server } from '../server';
+import { Link, useNavigate } from 'react-router-dom';
+import Popup from './popup';
 
-export const Navbar = () => {
+// common styles to reduce repetation
+const buttonStyles = 'p-[10px] text-[16px] text-base text-color2 border border-color2 bg-transparent rounded hover:bg-color2 hover:text-color1 transition duration-300 cursor-pointer';
+const inputStyles = 'p-[10px] text-[16px] text-base shadow-md rounded-xl w-full max-w-[400px]'
+
+const Navbar = () => {
     // state to store fetched project categories
-    const [Categories, setCategories] = useState([]); 
+    const [Categories, setCategories] = useState([]);
+
+    // State to manage register popup visibility
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     /* state to manage wether the categories list is open or closed 
-    & REf to determine outside clicks
+    & REf to determine the outside clicks
     */
     const [open, setOpen] = useState(false);
     const catRef = useRef(null);
 
-    // common styles to reduce repetation
-    const buttonStyles = 'p-[10px] text-[16px] text-base text-color2 border border-color2 bg-transparent rounded hover:bg-color2 hover:text-color1 transition duration-300 cursor-pointer';
+    // Buttons navigations with react router dom
+    const navigate = useNavigate()
 
     // fetch categories
     useEffect(() => {
@@ -45,6 +54,10 @@ export const Navbar = () => {
         };
     }, []); // the empty dependency to make it only runs once
 
+    const handleStartProjectClick = () => {
+        setIsPopupOpen(true); // Open the popup
+    };
+
     return (
         <header className="flex flex-row md:flex-col items-center bg-color1 text-color2 text-lg font-bold w-full fixed top-0 left-0 p-2 m-0">
             <a href='/' className='flex'>
@@ -56,7 +69,7 @@ export const Navbar = () => {
                 <input
                     type='text'
                     placeholder='Search by Projects, Categories or creators'
-                    className='p-[10px] text-[16px] text-base shadow-md w-full max-w-[400px]' />
+                    className={inputStyles} />
             </div>
 
             <div className='flex space-x-2'>
@@ -64,11 +77,13 @@ export const Navbar = () => {
                     type='button'
                     value='Start a Project'
                     className={buttonStyles}
+                    onClick={handleStartProjectClick}
                 />
                 <input
                     type='button'
                     value='Join us'
                     className={buttonStyles}
+                    onClick={() => navigate('/join')}
                 />
 
                 <div className='relative' ref={catRef}>
@@ -76,7 +91,7 @@ export const Navbar = () => {
                         className={`flex items-center space-x-1 ${buttonStyles}`}
                         onClick={() => setOpen(!open)}
                     >
-                        Categories <span><BiArrowFromTop/></span>
+                        Categories <span>{open ? <BiArrowFromBottom /> : <BiArrowFromTop />}</span>
                     </button>
                     {open && (
                         <ul className='absolute z-10 bg-color1 text-color2 shadow-md border border-color2 rounded-lg mt-2 mr-5'>
@@ -89,6 +104,19 @@ export const Navbar = () => {
                     )}
                 </div>
             </div>
+            <Popup
+                isOpen={isPopupOpen}
+                onClose={() => setIsPopupOpen(false)}
+                title="Registration Required"
+                content={
+                    <span>
+                        You need to 
+                        <Link to={'/join'}  className="text-color2 hover:underline"> Register </Link> 
+                        first before starting a project.
+                    </span>
+                } />
         </header>
     );
 };
+
+export { Navbar, buttonStyles, inputStyles }
