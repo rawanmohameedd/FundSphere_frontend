@@ -1,0 +1,97 @@
+{
+    "users": [
+        {
+            "user_id": 1,
+            "username": "john_doe",
+            "email": "john@example.com",
+            "password": "hashedpassword",
+            "campaigns": [
+                1
+            ],
+            "donations": [
+                1
+            ]
+        }
+    ],
+    "categories": [
+        {
+            "category_id": 1,
+            "name": "Health",
+            "campaigns": [
+                1
+            ]
+        },
+        {
+            "category_id": 2,
+            "name": "Education",
+            "campaigns": []
+        },
+        {
+            "category_id": 3,
+            "name": "Environment",
+            "campaigns": []
+        },
+        {
+            "category_id": 4,
+            "name": "Animal Welfare",
+            "campaigns": []
+        },
+        {
+            "category_id": 5,
+            "name": "Human Rights",
+            "campaigns": []
+        },
+        {
+            "category_id": 6,
+            "name": "Technology",
+            "campaigns": []
+        },
+        {
+            "category_id": 7,
+            "name": "Arts & Culture",
+            "campaigns": []
+        },
+        {
+            "category_id": 8,
+            "name": "Disaster Relief",
+            "campaigns": []
+        }
+    ],
+    "campaigns": [
+        {
+            "campaign_id": 1,
+            "user_id": 1,
+            "title": "Help for Health",
+            "description": "Support health initiatives",
+            "goal_amount": 5000.00,
+            "current_amount": 1200.00,
+            "start_date": "2023-09-01T00:00:00.000Z",
+            "end_date": "2023-12-31T00:00:00.000Z",
+            "created_at": "2023-07-01T00:00:00.000Z",
+            "category_id": 1,
+            "donations": [
+                1
+            ]
+        }
+    ],
+    "donations": [
+        {
+            "donation_id": 1,
+            "user_id": 1,
+            "campaign_id": 1,
+            "amount": 200.00,
+            "donation_date": "2023-09-05T00:00:00.000Z",
+            "payment": [
+                1
+            ]
+        }
+    ],
+    "payments": [
+        {
+            "payment_id": 1,
+            "donation_id": 1,
+            "Payment_status": "completed",
+            "processed_time": "2023-09-06T00:00:00.000Z"
+        }
+    ]
+}
