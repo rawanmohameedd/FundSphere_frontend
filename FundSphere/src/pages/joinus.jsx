@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import logo from '../assets/logo_transparent.png';
 import { buttonStyles, inputStyles } from "../Components/navbar";
 import { BsFacebook, BsGoogle } from "react-icons/bs";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 export const Joinus = () => {
     const [signed, setSigned] = useState(false);
@@ -15,7 +16,6 @@ export const Joinus = () => {
 
             {/* Right Section - Sign in/up form */}
             <div className="flex flex-col justify-center items-center text-lg font-bold text-color2 space-y-8 p-5">
-                
                 <div className="flex flex-col w-full items-center space-y-4">
                     <button className={`${buttonStyles} flex items-center justify-center w-full max-w-[300px]`}>
                         Continue with Google <span className="ml-2"><BsGoogle /></span>
@@ -78,9 +78,12 @@ export const Joinus = () => {
                 <div className="text-color2 text-center font-medium">
                     <p>
                         {signed ? (
-                            <>Don't have an account? <a  className='cursor-pointer' onClick={() => setSigned(false)}> Sign Up</a></>
+                            <>
+                            <Link to={"/verfiy"} className="underline cursor-pointer">Forget your Password?</Link>
+                            <p>Don't have an account? <a className='cursor-pointer' onClick={() => setSigned(false)}> Sign Up</a></p>
+                            </>
                         ) : (
-                            <>Already have an account? <a className='cursor-pointer'  onClick={() => setSigned(true)}> Sign in</a></>
+                            <>Already have an account? <a className='cursor-pointer' onClick={() => setSigned(true)}> Sign in</a></>
                         )}
                     </p>
                 </div>
