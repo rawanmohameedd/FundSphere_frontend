@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import { BiArrowFromBottom, BiArrowFromTop } from 'react-icons/bi';
+import { FaSearch, FaSignOutAlt } from 'react-icons/fa';
+import { BiArrowFromBottom, BiArrowFromTop, BiUser } from 'react-icons/bi';
 import logo from '../assets/logo_transparent.png';
 import axios from 'axios';
 import { server } from '../server';
@@ -78,9 +78,9 @@ const Navbar = () => {
 
     return (
         <header className="flex flex-row md:flex-col items-center bg-color1 text-color2 text-lg font-bold w-full fixed top-0 left-0 p-2 m-0">
-            <a href='/' className='flex'>
+            <Link to={'/'} className='flex'>
                 <img src={logo} alt="Logo" className='object-contain w-[150px] h-[150px]' />
-            </a>
+            </Link>
 
             <div className='relative flex-grow mx-5 my-5 flex justify-center items-center'>
                 <span className='mr-2'><FaSearch /></span>
@@ -101,11 +101,11 @@ const Navbar = () => {
                         </button>
                         {userMenuOpen && (
                             <ul className='absolute z-10 bg-color1 text-color2 shadow-md border border-color2 rounded-lg mt-2 mr-5'>
-                                <li className='p-2 hover:bg-color2 hover:text-color1'>
-                                    <Link to='/profile' className='text-inherit hover:text-inherit hover:underline'>Profile</Link>
+                                <li className='p-2 hover:bg-color2 hover:text-color1 cursor-pointer'>
+                                    <Link to='/profile' className='text-inherit hover:text-inherit flex flex-row '><BiUser /> Profile</Link>
                                 </li>
-                                <li className='p-2 hover:bg-color2 hover:text-color1'>
-                                    <button onClick={handleSignOut} className='text-inherit hover:text-inherit hover:underline'>Sign Out</button>
+                                <li onClick={handleSignOut}  className='bg-color1 p-2 hover:bg-color2 text-inherit hover:text-color1 cursor-pointer flex flex-row' >
+                                    <FaSignOutAlt/> Sign out
                                 </li>
                             </ul>
                         )}
