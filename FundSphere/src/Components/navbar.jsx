@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch, FaSignOutAlt } from 'react-icons/fa';
-import { BiArrowFromBottom, BiArrowFromTop, BiUser } from 'react-icons/bi';
+import { BiArrowFromBottom, BiArrowFromTop, BiTrash, BiUser } from 'react-icons/bi';
 import logo from '../assets/logo_transparent.png';
 import axios from 'axios';
 import { server } from '../server';
@@ -12,19 +12,21 @@ const buttonStyles = 'p-[10px] text-[16px] text-base text-color2 border border-c
 const inputStyles = 'p-[10px] text-[16px] text-base shadow-md rounded-xl w-full max-w-[400px]';
 
 const Navbar = () => {
-    const [Categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [isSignOutPopupOpen, setIsSignOutPopupOpen] = useState(false);
     const [open, setOpen] = useState(false);
+
     const catRef = useRef(null);
+    const userRef = useRef(null);
+
     const navigate = useNavigate();
     const isLoggedIn = !!Cookies.get('authToken');
 
-    // New state for search functionality
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);  // To store search results
-    
+    const [searchResults, setSearchResults] = useState([]);  
+
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -40,22 +42,30 @@ const Navbar = () => {
     }, []);
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
+        const handleClickOutsideUser = (event) => {
+            if (userRef.current && !userRef.current.contains(event.target)) {
+                setUserMenuOpen(false);
+            }
+        };
+
+        const handleClickOutsideCategories = (event) => {
             if (catRef.current && !catRef.current.contains(event.target)) {
                 setOpen(false);
             }
         };
-        document.addEventListener('click', handleClickOutside);
+
+        document.addEventListener('click', handleClickOutsideUser);
+        document.addEventListener('click', handleClickOutsideCategories);
+
         return () => {
-            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener('click', handleClickOutsideUser);
+            document.removeEventListener('click', handleClickOutsideCategories);
         };
     }, []);
 
     const handleStartProjectClick = () => {
-        if (isLoggedIn) 
-            navigate('/create');
-        else 
-            setIsPopupOpen(true);
+        if (isLoggedIn) navigate('/create');
+        else setIsPopupOpen(true);
     };
 
     const handleSignOut = () => {
@@ -88,6 +98,12 @@ const Navbar = () => {
         }
     };
 
+    // Handle clearing the search term and results
+    const handleClearSearch = () => {
+        setSearchTerm('');
+        setSearchResults([]);
+    };
+
     return (
         <header className="flex flex-row md:flex-col items-center bg-color1 text-color2 text-lg font-bold w-screen fixed top-0 left-0 p-2 m-0">
             <Link to={'/'} className='flex'>
@@ -102,15 +118,24 @@ const Navbar = () => {
                         placeholder='Search by Projects, Categories or creators'
                         className={inputStyles}
                         value={searchTerm}
-                        onChange={handleSearchChange}  // Handle change
+                        onChange={handleSearchChange} 
                     />
                     <button type="submit" className={buttonStyles}>Search</button>
+                    {searchTerm && (
+                        <button
+                            type="button"
+                            className={`${buttonStyles} ml-2`} 
+                            onClick={handleClearSearch}
+                        >
+                            <BiTrash/>
+                        </button>
+                    )}
                 </form>
             </div>
 
             <div className='flex space-x-2'>
                 {isLoggedIn ? (
-                    <div className='relative' ref={catRef}>
+                    <div className='relative' ref={userRef}>
                         <button
                             className={`flex items-center space-x-1 ${buttonStyles}`}
                             onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -152,9 +177,10 @@ const Navbar = () => {
                     </button>
                     {open && (
                         <ul className='absolute z-10 bg-color1 text-color2 shadow-md border border-color2 rounded-lg mt-2 mr-5'>
-                            {Categories.map((category) => (
+                            {categories.map((category) => (
                                 <li key={category.category_id} className='p-2 hover:bg-color2 hover:text-color1 border-b border-color2 last:border-0'>
-                                    <a href='#' className='text-inherit hover:text-inherit hover:underline'>{category.name}</a>
+                                    <Link to={`/category/${category.category_id}`} className='text-inherit hover:text-inherit hover:underline'
+                                    onClick={()=>setOpen(false)}>{category.name}</Link>
                                 </li>
                             ))}
                         </ul>
@@ -162,12 +188,11 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Render search results  */}
             <div>
                 {searchResults.length > 0 && (
-                    <ul>
+                    <ul >
                         {searchResults.map((result, index) => (
-                            <li key={index}>{result.name || result.title || result.username}</li>  // Adjust to your data structure
+                            <li key={index} className='border-b-2 border-color2'>{result.name || result.title || result.username}</li>  
                         ))}
                     </ul>
                 )}

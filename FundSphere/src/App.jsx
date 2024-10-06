@@ -8,6 +8,7 @@ import CreateEditCampaign from './pages/editCampaign';
 import Campaign from './pages/showCampign';
 import { Campaigns } from './Components/campaigns';
 import { Dashboard } from './pages/dashboard';
+import { CampaignsbyCat } from './pages/CampaignsCat';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -17,6 +18,7 @@ const router = createBrowserRouter(
         <Route path='/create' element={<CreateEditCampaign />} />
         <Route path='/edit/:campaign_id' element={<CreateEditCampaign />} />
         <Route path='/campain' element={<Campaign />} />
+        <Route path='/category/:category_id' element={<CampaignsbyCat/>}/>
       </Route>
       <Route path='/join' element={<Joinus />} />
       <Route path='/verfiy' element={<Verify />} />

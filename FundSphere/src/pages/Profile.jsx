@@ -117,22 +117,23 @@ export const Profile = () => {
                                         <p className="text-lg"> <span className='font-bold'>Email: </span>{profile.email}</p>
                                     </div>
 
-                                    {showFileInput && ( 
+                                    {showFileInput && (
                                         <input
                                             type="file"
                                             onChange={handleFileChange}
                                             className="mt-4"
                                         />
                                     )}
+                                    <div className='flex flex-row space-x-7 justify-between'>
+                                        <button
+                                            onClick={() => setShowFileInput(!showFileInput)}
+                                            className={`${buttonStyles} ml-auto flex items-center space-x-2 right-0 top-0 mt-4`}
+                                        >
+                                            {showFileInput ? 'Cancel' : 'Upload your Profile Photo'}
+                                        </button>
+                                        {showFileInput && <button onClick={handleProfileUpload} className={`${buttonStyles}ml-auto flex items-center space-x-2 right-0 top-0 mt-4`}> Save</button>}
 
-                                    <button
-                                        onClick={() => setShowFileInput(!showFileInput)} 
-                                        className={`${buttonStyles} ml-auto flex items-center space-x-2 right-0 top-0 mt-4`}
-                                    >
-                                        {showFileInput ? 'Cancel' : 'Upload your Profile Photo'}
-                                    </button>
-
-
+                                    </div>
 
                                     <button
                                         onClick={handleProfileDelete}
