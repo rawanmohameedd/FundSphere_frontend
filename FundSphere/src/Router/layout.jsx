@@ -1,11 +1,17 @@
 import React from 'react';
 import { Navbar } from '../Components/navbar';
+import CreateEditCampaign from '../pages/editCampaign';
+import { Outlet } from 'react-router-dom';
+import { Footer } from '../Components/footer';
 
-const Layout = ({ children }) => {
+const Layout = () => {
     return (
         <div>
             <Navbar />
-            <main>{children}</main>
+            <main >
+                <Outlet/>
+            </main>
+            <Footer/>
         </div>
     );
 };

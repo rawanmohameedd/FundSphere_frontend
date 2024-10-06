@@ -98,16 +98,16 @@ export const Profile = () => {
                 </button>
             </header>
 
-            <div className="flex flex-col p-8 min-h-screen pt-[160px] overflow-y-auto">
+            <div className="flex flex-col justify-center p-8 min-h-screen pt-[160px] overflow-y-auto w-screen">
                 {/* User Data Section */}
-                <section className="relative mb-8 pb-4 border-b border-gray-300 flex flex-col  w-screen">
+                <section className="relative mb-8 pb-4 border-b border-gray-300 flex flex-col  ">
                     <div>
                         {profile ? (
                             <div className="flex flex-row items-center space-x-4 mt-8">
                                 <img
                                     src={profile.profile_photo || defaultProfile}
                                     alt="Profile"
-                                    className='w-[150px] h-[150px]'
+                                    className='w-[250px] h-[250px]'
                                     ref={mediaRef}
                                     onClick={() => handleFullscreen(mediaRef)}
                                 />
@@ -117,7 +117,7 @@ export const Profile = () => {
                                         <p className="text-lg"> <span className='font-bold'>Email: </span>{profile.email}</p>
                                     </div>
 
-                                    {showFileInput && ( // Show file input only when 'Update Profile Photo' is clicked
+                                    {showFileInput && ( 
                                         <input
                                             type="file"
                                             onChange={handleFileChange}
@@ -126,19 +126,12 @@ export const Profile = () => {
                                     )}
 
                                     <button
-                                        onClick={() => setShowFileInput(!showFileInput)} // Toggle file input visibility
+                                        onClick={() => setShowFileInput(!showFileInput)} 
                                         className={`${buttonStyles} ml-auto flex items-center space-x-2 right-0 top-0 mt-4`}
                                     >
-                                        {showFileInput ? 'Cancel' : 'Update your Profile Photo'}
+                                        {showFileInput ? 'Cancel' : 'Upload your Profile Photo'}
                                     </button>
 
-
-                                    <button
-                                        onClick={handleProfileUpload}
-                                        className={`${buttonStyles} ml-auto flex items-center space-x-2 right-0 top-0 mt-4`}
-                                    >
-                                        {showFileInput ? "save" : "Upload Profile photo"}
-                                    </button>
 
 
                                     <button
@@ -156,7 +149,7 @@ export const Profile = () => {
                 </section>
 
                 {/* Campaigns Section */}
-                <section className="relative mb-8 pb-4 border-b border-gray-300 flex flex-col w-screen">
+                <section className="relative mb-8 pb-4 border-b border-gray-300 flex flex-col ">
                     <div className='flex flex-row justify-between items-center space-x-2'>
                         <h2
                             className="text-xl font-semibold flex justify-between items-center cursor-pointer"
@@ -164,9 +157,9 @@ export const Profile = () => {
                         >
                             Your Campaigns {campaigns ? <FaChevronUp /> : <FaChevronDown />}
                         </h2>
-                        <button className={`${buttonStyles} right-0 top-0 mr-5 z-20`}>
-                            Start new project
-                        </button>
+                        <Link to={'/create'} className={`${buttonStyles} right-0 top-0 mr-5 z-20`}>
+                            Start new Campaign
+                        </Link>
                     </div>
                     <div className={`transition-all duration-500 ${campaigns ? 'max-h-[500px]' : 'max-h-0'} overflow-hidden`}>
                         <div className="mt-4">
@@ -177,7 +170,7 @@ export const Profile = () => {
                 </section>
 
                 {/* Donations Section */}
-                <section className="relative mb-8 pb-4 flex flex-col w-screen">
+                <section className="relative mb-8 pb-4 flex flex-col ">
                     <h2
                         className="text-xl font-semibold flex items-center cursor-pointer"
                         onClick={() => setDonations(!donations)}
