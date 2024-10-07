@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import { Link, useParams } from 'react-router-dom';
 import { server } from '../server'; 
 import { buttonStyles } from '../Components/navbar';

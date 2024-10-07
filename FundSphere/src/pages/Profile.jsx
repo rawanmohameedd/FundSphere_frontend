@@ -9,18 +9,19 @@ import { buttonStyles } from '../Components/navbar';
 import axios from 'axios';
 import { server } from '../server';
 import { handleFullscreen } from '../Components/fullscreen';
-import { BsReddit } from 'react-icons/bs';
 import { Campaigns } from '../Components/campaigns';
+import Popup from '../Components/popup'; 
 
 export const Profile = () => {
     const [profile, setProfile] = useState(null);
-    const [showCampaigns, setShowCampaigns] = useState(false);  // toggle campaigns list
-    const [userCampaigns, setUserCampaigns] = useState([]);      // User Campaigns data
+    const [showCampaigns, setShowCampaigns] = useState(false); // toggle campaigns list
+    const [userCampaigns, setUserCampaigns] = useState([]); // User Campaigns data
     const [donations, setDonations] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [showFileInput, setShowFileInput] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(''); // State for popup message
+    const [isPopupOpen, setIsPopupOpen] = useState(false); // State to control popup visibility
     const navigate = useNavigate();
-
     const mediaRef = useRef(null);
 
     const handleSignOut = () => {
@@ -34,7 +35,8 @@ export const Profile = () => {
 
     const handleProfileUpload = async () => {
         if (!selectedImage) {
-            alert('Please select a file first.');
+            setPopupMessage('Please select a file first.');
+            setIsPopupOpen(true);
             return;
         }
 
@@ -49,11 +51,13 @@ export const Profile = () => {
                 }
             });
             setProfile(response.data.user);
-            alert('Profile photo updated successfully');
+            setPopupMessage('Profile photo updated successfully');
+            setIsPopupOpen(true);
             setShowFileInput(false); // Hide file input after successful upload
         } catch (err) {
             console.error("Error uploading profile photo:", err.message);
-            alert('Failed to upload profile photo');
+            setPopupMessage('Failed to upload profile photo');
+            setIsPopupOpen(true);
         }
     };
 
@@ -65,10 +69,12 @@ export const Profile = () => {
                 }
             });
             setProfile(response.data.user);
-            alert('Profile photo deleted successfully');
+            setPopupMessage('Profile photo deleted successfully');
+            setIsPopupOpen(true);
         } catch (err) {
             console.error("Error deleting profile photo:", err.message);
-            alert('Failed to delete profile photo');
+            setPopupMessage('Failed to delete profile photo');
+            setIsPopupOpen(true);
         }
     };
 
@@ -189,7 +195,6 @@ export const Profile = () => {
                     </div>
                 </section>
 
-
                 {/* Donations Section */}
                 <section className="relative mb-8 pb-4 flex flex-col ">
                     <h2
@@ -206,6 +211,14 @@ export const Profile = () => {
                     </div>
                 </section>
             </div>
+
+            {/* Popup for messages */}
+            <Popup
+                isOpen={isPopupOpen}
+                onClose={() => setIsPopupOpen(false)}
+                title="Notification"
+                content={popupMessage}
+            />
         </>
     );
 };
