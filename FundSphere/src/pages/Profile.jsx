@@ -9,13 +9,16 @@ import { buttonStyles } from '../Components/navbar';
 import axios from 'axios';
 import { server } from '../server';
 import { handleFullscreen } from '../Components/fullscreen';
+import { BsReddit } from 'react-icons/bs';
+import { Campaigns } from '../Components/campaigns';
 
 export const Profile = () => {
     const [profile, setProfile] = useState(null);
-    const [campaigns, setCampaigns] = useState(false);
+    const [showCampaigns, setShowCampaigns] = useState(false);  // toggle campaigns list
+    const [userCampaigns, setUserCampaigns] = useState([]);      // User Campaigns data
     const [donations, setDonations] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [showFileInput, setShowFileInput] = useState(false); // New state for file input visibility
+    const [showFileInput, setShowFileInput] = useState(false);
     const navigate = useNavigate();
 
     const mediaRef = useRef(null);
@@ -77,13 +80,30 @@ export const Profile = () => {
                         Authorization: `Bearer ${Cookies.get('authToken')}`
                     }
                 });
-                console.log(response.data);
                 setProfile(response.data);
             } catch (err) {
                 console.error("can't fetch this profile", err.message);
             }
         };
         fetchProfile();
+    }, []);
+
+    useEffect(() => {
+        const fetchCampaigns = async () => {
+            try {
+                const response = await axios.get(`${server}/getCampainsbyUser`, {
+                    headers: {
+                        Authorization: `Bearer ${Cookies.get('authToken')}`
+                    }
+                });
+                setUserCampaigns(response.data);
+                console.log(response.data);
+            } catch (err) {
+                console.error("can't fetch campaigns", err.message);
+            }
+        };
+
+        fetchCampaigns();
     }, []);
 
     return (
@@ -98,7 +118,7 @@ export const Profile = () => {
                 </button>
             </header>
 
-            <div className="flex flex-col justify-center p-8 min-h-screen pt-[160px] overflow-y-auto w-screen">
+            <div className="flex flex-col justify-center p-8 min-h-screen pt-[120px] overflow-y-auto w-screen">
                 {/* User Data Section */}
                 <section className="relative mb-8 pb-4 border-b border-gray-300 flex flex-col  ">
                     <div>
@@ -131,7 +151,7 @@ export const Profile = () => {
                                         >
                                             {showFileInput ? 'Cancel' : 'Upload your Profile Photo'}
                                         </button>
-                                        {showFileInput && <button onClick={handleProfileUpload} className={`${buttonStyles}ml-auto flex items-center space-x-2 right-0 top-0 mt-4`}> Save</button>}
+                                        {showFileInput && <button onClick={handleProfileUpload} className={`${buttonStyles} ml-auto flex items-center space-x-2 right-0 top-0 mt-4`}> Save</button>}
 
                                     </div>
 
@@ -154,21 +174,21 @@ export const Profile = () => {
                     <div className='flex flex-row justify-between items-center space-x-2'>
                         <h2
                             className="text-xl font-semibold flex justify-between items-center cursor-pointer"
-                            onClick={() => setCampaigns(!campaigns)}
+                            onClick={() => setShowCampaigns(!showCampaigns)}
                         >
-                            Your Campaigns {campaigns ? <FaChevronUp /> : <FaChevronDown />}
+                            Your Campaigns {showCampaigns ? <FaChevronUp /> : <FaChevronDown />}
                         </h2>
                         <Link to={'/create'} className={`${buttonStyles} right-0 top-0 mr-5 z-20`}>
                             Start new Campaign
                         </Link>
                     </div>
-                    <div className={`transition-all duration-500 ${campaigns ? 'max-h-[500px]' : 'max-h-0'} overflow-hidden`}>
-                        <div className="mt-4">
-                            <p className="text-lg">Campaign 1</p>
-                            <p className="text-lg">Campaign 2</p>
-                        </div>
+
+                    <div className={` ${showCampaigns ? 'max-h-full' : 'max-h-0'} overflow-hidden`}>
+                        <Campaigns campaigns={userCampaigns} edit={1}/>
+                        
                     </div>
                 </section>
+
 
                 {/* Donations Section */}
                 <section className="relative mb-8 pb-4 flex flex-col ">

@@ -12,7 +12,6 @@ export const Dashboard = () => {
             try {
                 const response = await axios.get(`${server}/getCampains`);  
                 setCampaigns(response.data);
-                console.log(response.data)  
             } catch (error) {
                 console.error('Error fetching campaigns:', error); 
             } finally {
@@ -21,13 +20,13 @@ export const Dashboard = () => {
         };
 
         fetchCampaigns();
-    }, []);  
+    },[]);  
 
     if (loading) return <div>Loading...</div>;  
 
     return (
         <div className='flex flex-wrap justify-between  mt-[80px] md:mt-[200px] p-0'>
-            <Campaigns campaigns={campaigns} /> 
+            <Campaigns campaigns={campaigns}  /> 
         </div>
     );
 };

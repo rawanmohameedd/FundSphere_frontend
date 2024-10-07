@@ -17,15 +17,14 @@ const Navbar = () => {
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [isSignOutPopupOpen, setIsSignOutPopupOpen] = useState(false);
     const [open, setOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState([]);  
 
     const catRef = useRef(null);
     const userRef = useRef(null);
 
     const navigate = useNavigate();
     const isLoggedIn = !!Cookies.get('authToken');
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);  
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -86,13 +85,22 @@ const Navbar = () => {
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         try {
-            const [campaigns, categories, users] = await Promise.all([
+            const [campaigns, categories] = await Promise.all([
                 axios.get(`${server}/searchCamp/${searchTerm}`),
                 axios.get(`${server}/searchCat/${searchTerm}`),
-                axios.get(`${server}/searchUsers/${searchTerm}`)
             ]);
 
-            setSearchResults([...campaigns.data, ...categories.data, ...users.data]);  // Combine results
+            console.log("Campaigns: ", campaigns.data);
+            console.log("Categories: ", categories.data);
+
+            // Combine results and filter out any undefined/null values
+            const combinedResults = [
+                ...campaigns.data,
+                ...categories.data,
+            ].filter(result => result);  
+
+            console.log(combinedResults)
+            setSearchResults(combinedResults);  // Set combined results
         } catch (err) {
             console.error('Error searching:', err);
         }
@@ -105,6 +113,7 @@ const Navbar = () => {
     };
 
     return (
+        <>
         <header className="flex flex-row md:flex-col items-center bg-color1 text-color2 text-lg font-bold w-screen fixed top-0 left-0 p-2 m-0">
             <Link to={'/'} className='flex'>
                 <img src={logo} alt="Logo" className='object-contain w-[150px] h-[150px]' />
@@ -120,14 +129,14 @@ const Navbar = () => {
                         value={searchTerm}
                         onChange={handleSearchChange} 
                     />
-                    <button type="submit" className={buttonStyles}>Search</button>
+                    <button type="submit" className={`${buttonStyles} ml-2`}>Search</button>
                     {searchTerm && (
                         <button
                             type="button"
                             className={`${buttonStyles} ml-2`} 
                             onClick={handleClearSearch}
                         >
-                            <BiTrash/>
+                            <BiTrash />
                         </button>
                     )}
                 </form>
@@ -180,23 +189,49 @@ const Navbar = () => {
                             {categories.map((category) => (
                                 <li key={category.category_id} className='p-2 hover:bg-color2 hover:text-color1 border-b border-color2 last:border-0'>
                                     <Link to={`/category/${category.category_id}`} className='text-inherit hover:text-inherit hover:underline'
-                                    onClick={()=>setOpen(false)}>{category.name}</Link>
+                                    onClick={() => setOpen(false)}>{category.name}</Link>
                                 </li>
                             ))}
                         </ul>
                     )}
                 </div>
             </div>
+                </header>
 
-            <div>
-                {searchResults.length > 0 && (
-                    <ul >
-                        {searchResults.map((result, index) => (
-                            <li key={index} className='border-b-2 border-color2'>{result.name || result.title || result.username}</li>  
-                        ))}
-                    </ul>
-                )}
-            </div>
+            {/* Search Results */}
+<div className='w-[50%] max-h-[350px] mx-auto mt-[300px] '>
+    {searchResults.length > 0 && (
+        <ul className="z-10 bg-color1 text-color2 shadow-lg border border-color2 rounded-lg overflow-y-auto max-h-[300px] space-y-2">
+            {searchResults.map((result, index) => (
+                <li
+                    key={index}
+                    className='border-b border-color2 p-3 hover:bg-color2 hover:text-color1 transition-colors duration-300 last:border-none'
+                >
+                    {result.name ? (
+                        <Link
+                            to={`/category/${result.category_id}`}
+                            onClick={handleClearSearch}
+                            className='text-inherit font-semibold hover:underline'
+                        >
+                            {result.name}
+                        </Link>
+                    ) : result.title ? (
+                        <Link
+                            to={`/campain/${result.campaign_id}`}
+                            onClick={handleClearSearch}
+                            className='text-inherit font-semibold hover:underline'
+                        >
+                            {result.title}
+                        </Link>
+                    ) : (
+                        <span className='text-gray-500'>No valid result found</span>
+                    )}
+                </li>
+            ))}
+        </ul>
+    )}
+</div>
+
 
             <Popup
                 isOpen={isPopupOpen}
@@ -217,7 +252,7 @@ const Navbar = () => {
                 title="Signed Out"
                 content={<span>You have signed out successfully! Goodbye!</span>}
             />
-        </header>
+            </>
     );
 };
 

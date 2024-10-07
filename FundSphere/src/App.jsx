@@ -17,7 +17,7 @@ const router = createBrowserRouter(
         <Route index element={<Dashboard />} />
         <Route path='/create' element={<CreateEditCampaign />} />
         <Route path='/edit/:campaign_id' element={<CreateEditCampaign />} />
-        <Route path='/campain' element={<Campaign />} />
+        <Route path='/campain/:camaign_id' element={<Campaign />} />
         <Route path='/category/:category_id' element={<CampaignsbyCat/>}/>
       </Route>
       <Route path='/join' element={<Joinus />} />
