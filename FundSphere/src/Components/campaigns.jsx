@@ -5,7 +5,7 @@ import { buttonStyles } from './navbar';
 
 export const Campaigns = ({ campaigns, edit }) => {
     return (
-        <div className='flex flex-wrap justify-between mt-[80px] p-[20px]'>
+        <div className='flex flex-wrap  justify-center mt-[10px] p-[20px] space-x-5'>
             {campaigns &&
                 campaigns.map((campaign) => {
                     const id = campaign.campaign_id;
