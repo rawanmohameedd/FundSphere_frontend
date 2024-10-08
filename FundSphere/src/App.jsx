@@ -8,6 +8,7 @@ import Campaign from './pages/showCampign';
 import { Dashboard } from './pages/dashboard';
 import { CampaignsbyCat } from './pages/CampaignsCat';
 import { Donations } from './pages/Donations';
+import { DonateHistory } from './pages/DonateHistory';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
         <Route path='/campain/:camaign_id' element={<Campaign />} />
         <Route path='/category/:category_id' element={<CampaignsbyCat/>}/>
         <Route path='/donate/:campaign_id' element={<Donations/>}/>
+        <Route path='/donateHistory/:campaign_id' element={<DonateHistory/>}/>
       </Route>
       <Route path='/join' element={<Joinus />} />
       <Route path='/verfiy' element={<Verify />} />

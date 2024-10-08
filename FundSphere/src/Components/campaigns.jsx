@@ -35,7 +35,7 @@ export const Campaigns = ({ campaigns, edit }) => {
                                     </Link>
                                     <Link
                                         className={`${buttonStyles} flex items-center space-x-2`}
-                                        to={`/edit/${id}`}
+                                        to={`/donateHistory/${id}`}
                                     >
                                         <BiHistory /> View Donations History
                                     </Link>

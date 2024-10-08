@@ -179,7 +179,7 @@ const Navbar = () => {
 
                 <div className='relative' ref={catRef}>
                     <button
-                        className={`flex items-center space-x-1 ${buttonStyles}`}
+                        className={`flex items-center space-x-1 mr-5 ${buttonStyles}`}
                         onClick={() => setOpen(!open)}
                     >
                         Categories <span>{open ? <BiArrowFromBottom /> : <BiArrowFromTop />}</span>

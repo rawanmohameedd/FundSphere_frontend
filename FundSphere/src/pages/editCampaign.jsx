@@ -26,7 +26,7 @@ const CreateEditCampaign = () => {
 
     const navigate = useNavigate();
     const campain_id = useParams();
-    const id = Number(campain_id.campaign_id);
+    var id = Number(campain_id.campaign_id);
     const today = new Date().toISOString().split('T')[0];
 
     useEffect(() => {
@@ -51,13 +51,28 @@ const CreateEditCampaign = () => {
                     console.error("Failed to fetch campaign data:", error.message);
                 })
                 .finally(() => {
-                    setLoading(false); // End loading after fetching data
+                    setLoading(false);
                 });
         }
     }, []);
 
     const handleSubmit = async () => {
-        console.log(title, desc, goal_amount, start, end, cat, photo);
+        // Validation for empty fields
+        if (!title || !desc || !goal_amount || !start || !end || !cat || !photo) {
+            setPopupTitle("Error");
+            setPopupContent("All fields are required.");
+            setIsPopupOpen(true);
+            return;
+        }
+    
+        // Validation for goal amount
+        if (goal_amount <= 0) {
+            setPopupTitle("Error");
+            setPopupContent("Goal amount must be greater than 0.");
+            setIsPopupOpen(true);
+            return;
+        }
+    
         setLoading(true); // Start loading when submitting
         const formData = new FormData();
         formData.append('title', title);
@@ -69,7 +84,7 @@ const CreateEditCampaign = () => {
         if (photo) {
             formData.append('photo', photo);
         }
-
+    
         try {
             if (isEditing) {
                 // Edit campaign
@@ -83,7 +98,7 @@ const CreateEditCampaign = () => {
                 setPopupContent("Campaign updated successfully!");
             } else {
                 // Create new campaign
-                await axios.post(`${server}/createCampaign`, formData, {
+                const response = await axios.post(`${server}/createCampaign`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${Cookies.get('authToken')}`
@@ -91,6 +106,8 @@ const CreateEditCampaign = () => {
                 });
                 setPopupTitle("Success");
                 setPopupContent("Campaign created successfully!");
+                id = response.data.campaign.campaign_id
+                console.log(id)
             }
         } catch (error) {
             console.error("Failed to submit campaign:", error.message);
@@ -99,26 +116,26 @@ const CreateEditCampaign = () => {
         } finally {
             setLoading(false); // End loading after submission
             setIsPopupOpen(true); // Show popup after submission
-            navigate(`/campain/${id}`);
+            navigate(`/campain/${id}`); // Navigate to campaign view after creation or update
         }
     };
+    
 
     const handleDelete = async () => {
         try {
             const response = await axios.delete(`${server}/deleteCampaign/${id}`);
             setPopupTitle("Deleted");
             setPopupContent(response.data.message || "Campaign deleted successfully.");
-            setIsPopupOpen(true); // Show popup first
+            setIsPopupOpen(true); 
     
-            // Delay navigation for 2 seconds to show the popup
             setTimeout(() => {
                 navigate('/profile');
-            }, 2000); // 2000ms delay (2 seconds)
+            }, 2000); 
         } catch (error) {
             console.error("Error deleting this Campaign", error.message);
             setPopupTitle("Error");
             setPopupContent("Failed to delete campaign. Please try again.");
-            setIsPopupOpen(true); // Show popup after failure
+            setIsPopupOpen(true); 
         }
     };    
 
