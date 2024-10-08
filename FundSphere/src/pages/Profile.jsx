@@ -3,20 +3,21 @@ import logo from '../assets/logo_transparent.png';
 import defaultProfile from '../assets/download (1).jpeg';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaChevronDown, FaChevronUp, FaSignOutAlt, FaUser } from 'react-icons/fa';
-import { BiEdit } from 'react-icons/bi';
 import Cookies from 'js-cookie';
 import { buttonStyles } from '../Components/navbar';
 import axios from 'axios';
 import { server } from '../server';
 import { handleFullscreen } from '../Components/fullscreen';
 import { Campaigns } from '../Components/campaigns';
-import Popup from '../Components/popup'; 
+import Popup from '../Components/popup';
+import { Footer } from '../Components/footer';
 
 export const Profile = () => {
     const [profile, setProfile] = useState(null);
     const [showCampaigns, setShowCampaigns] = useState(false); // toggle campaigns list
     const [userCampaigns, setUserCampaigns] = useState([]); // User Campaigns data
     const [donations, setDonations] = useState(false);
+    const [userDonations, setUserDonations] = useState([])
     const [selectedImage, setSelectedImage] = useState(null);
     const [showFileInput, setShowFileInput] = useState(false);
     const [popupMessage, setPopupMessage] = useState(''); // State for popup message
@@ -112,6 +113,24 @@ export const Profile = () => {
         fetchCampaigns();
     }, []);
 
+    useEffect(() => {
+        const fetchDonations = async () => {
+            try {
+                const response = await axios.get(`${server}/userDonations`, {
+                    headers: {
+                        Authorization: `Bearer ${Cookies.get('authToken')}`
+                    }
+                });
+                setUserDonations(response.data);
+                console.log(response.data);
+            } catch (err) {
+                console.error("can't fetch donations", err.message);
+            }
+        };
+
+        fetchDonations();
+    }, []);
+
     return (
         <>
             {/* Different Navbar */}
@@ -190,23 +209,43 @@ export const Profile = () => {
                     </div>
 
                     <div className={` ${showCampaigns ? 'max-h-full' : 'max-h-0'} overflow-hidden`}>
-                        <Campaigns campaigns={userCampaigns} edit={1}/>
-                        
+                        <Campaigns campaigns={userCampaigns} edit={1} />
+
                     </div>
                 </section>
 
                 {/* Donations Section */}
-                <section className="relative mb-8 pb-4 flex flex-col ">
+                <section className="relative mb-8 pb-4 flex flex-col justify-center">
                     <h2
-                        className="text-xl font-semibold flex items-center cursor-pointer"
+                        className="text-xl font-semibold flex items-center cursor-pointer mb-5"
                         onClick={() => setDonations(!donations)}
                     >
                         Your Donations {donations ? <FaChevronUp /> : <FaChevronDown />}
                     </h2>
-                    <div className={`transition-all duration-500 ${donations ? 'max-h-[500px]' : 'max-h-0'} overflow-hidden`}>
-                        <div className="mt-4">
-                            <p className="text-lg">Donation 1</p>
-                            <p className="text-lg">Donation 2</p>
+                    <div className={` ${donations ? 'max-h-full' : 'max-h-0'} overflow-hidden `}>
+                        <div className='flex flex-wrap  justify-center mt-[10px] p-[20px] space-x-5'>
+                            {userDonations &&
+                                userDonations.map((donation) => {
+                                    const id = donation.donation_id
+                                    const date = new Date(donation.donation_date).toISOString().split('T')[0]
+                                    const image = donation.campaign.campaign_photo;
+
+                                    return (
+                                        <div key={id} className='flex flex-col flex-wrap space-y-4 space-x-4 w-[40%] md:w-[90%] items-center justify-between mb-4 p-4 border border-gray-200 rounded-lg hover:bg-color1'>
+                                            <Link to={`/campain/${donation.campaign_id}`} className='flex flex-1 text-color2  hover:text-inherit space-x-2'>
+                                                <p className='flex items-center justify-center'>
+                                                    You donate {donation.amount} for {donation.campaign.title} at {date}
+                                                </p>
+                                                <div className='flex items-center justify-center'>
+                                                    <img src={image} alt={donation.campaign.title} className='h-[150px] w-[150px] object-contain' />
+                                                </div>
+
+                                            </Link>
+                                        </div>
+                                    )
+                                })
+
+                            }
                         </div>
                     </div>
                 </section>
@@ -219,6 +258,7 @@ export const Profile = () => {
                 title="Notification"
                 content={popupMessage}
             />
+            <Footer/>
         </>
     );
 };
