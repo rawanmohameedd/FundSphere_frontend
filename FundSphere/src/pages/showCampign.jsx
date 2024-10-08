@@ -18,11 +18,11 @@ const Campaign = () => {
             try {
                 const response = await axios.get(`${server}/getCampaign/${id}`);
                 setCampaign(response.data.result);
-                setLoading(false); // Stop loading after fetching
+                setLoading(false); 
             } catch (err) {
                 console.error('Error fetching campaign:', err.message);
                 setError('Failed to fetch campaign details.');
-                setLoading(false); // Stop loading after error
+                setLoading(false);
             }
         };
 
@@ -85,7 +85,8 @@ const Campaign = () => {
                         <p><strong>Status:</strong> {status}</p>
                         <p><strong>Category:</strong> {campaign.category?.name}</p>
                         </div>
-                        <Link className={`${buttonStyles} flex flex-row justify-center w-[50%] `}> <BiDonateHeart/>Donate </Link>
+                        <Link to={`/donate/${id}`}
+                        className={`${buttonStyles} flex flex-row justify-center w-[50%] `}> <BiDonateHeart/>Donate </Link>
                     </>
                 ) : (
                     <p>No campaign found.</p>
