@@ -24,6 +24,7 @@ export const Joinus = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         if (signed) {
             try {
                 const payload = {
@@ -32,47 +33,58 @@ export const Joinus = () => {
                 };
                 const response = await axios.post(`${server}/signin`, payload);
                 console.log('User Signed in Successfully!', response.data);
-
+    
                 //store the token in a cookie
-                const {token} = response.data
-                Cookies.set("authToken", token, { /*secure: true, sameSite: 'Strict', */expires: 2 });
-
+                const { token } = response.data;
+                Cookies.set("authToken", token, { expires: 2 });
+    
                 setPopupTitle("Welcome Back!");
                 setPopupContent("You have successfully signed in.");
                 setPopupOpen(true);
-                
+    
                 // After closing the popup, navigate to the home page
                 setTimeout(() => {
                     setPopupOpen(false);
-                    navigate('/',{replace:true});
+                    navigate('/', { replace: true });
                 }, 2000);
             } catch (err) {
+                let errorMessage = "An error occurred. Please try again.";
                 if (err.response) {
-                    console.error("Sign in error", err.response.data);
-                } else {
-                    console.error("Error", err.message);
+                    errorMessage = err.response.data.message || errorMessage;
                 }
+                setPopupTitle("Sign In Error");
+                setPopupContent(errorMessage);
+                setPopupOpen(true);
             }
         } else {
             // handle sign up logic
             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-
-            if (password !== confirmPass )
-                return alert("Passwords do not match");
-            if (!passwordRegex.test(password)) 
-                return alert("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.");
-
-            setPopupTitle("Please Check Your Email");
-                    setPopupContent("You need to verify your account before signing in.");
-                    setPopupOpen(true);
     
-                    // Navigate to Verify component after closing the popup
-                    setTimeout(() => {
-                        setPopupOpen(false);
-                        navigate('/verfiy', { state: { email, username, password } });
-                    }, 2000);
+            if (password !== confirmPass) {
+                setPopupTitle("Password Mismatch");
+                setPopupContent("Passwords do not match. Please try again.");
+                setPopupOpen(true);
+                return;
+            }
+            if (!passwordRegex.test(password)) {
+                setPopupTitle("Weak Password");
+                setPopupContent("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.");
+                setPopupOpen(true);
+                return;
+            }
+    
+            setPopupTitle("Please Check Your Email");
+            setPopupContent("You need to verify your account before signing in.");
+            setPopupOpen(true);
+    
+            // Navigate to Verify component after closing the popup
+            setTimeout(() => {
+                setPopupOpen(false);
+                navigate('/verfiy', { state: { email, username, password } });
+            }, 2000);
         }
     };
+    
 
     return (
         <div className="grid grid-cols-2 w-screen h-screen bg-gradient-to-r from-color1 to-color1">
